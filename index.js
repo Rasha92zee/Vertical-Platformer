@@ -18,7 +18,7 @@ const collisionBlocks = [];
 floorCollisions2D.forEach((row, y) => {
   row.forEach((symbol, x) => {
     if (symbol === 202) {
-      console.log("draw a block here!!!");
+      // console.log("draw a block here!!!");
       collisionBlocks.push(
         new CollisionBlock({
           position: {
@@ -40,7 +40,7 @@ const platformCollisionBlocks = [];
 platformCollisions2D.forEach((row, y) => {
   row.forEach((symbol, x) => {
     if (symbol === 202) {
-      console.log("draw a block here!!!");
+      // console.log("draw a block here!!!");
       platformCollisionBlocks.push(
         new CollisionBlock({
           position: {
@@ -56,13 +56,13 @@ platformCollisions2D.forEach((row, y) => {
 const gravity = 0.5;
 
 const player = new Player({
-  x: 0,
-  y: 0,
-});
-
-const player2 = new Player({
-  x: 300,
-  y: 200,
+  position: {
+    x: 100,
+    y: 300,
+  },
+  collisionBlocks: collisionBlocks,
+  imageSrc: './img/warrior/Idle.png',
+  frameRate: 8,
 });
 
 const keys = {
@@ -91,25 +91,24 @@ function animate() {
   c.scale(4, 4);
   c.translate(0, -background.image.height + scaledCanvas.height);
   background.update();
-  collisionBlocks.forEach(collisionBlock => {
-    collisionBlock.update()
-  })
+  collisionBlocks.forEach((collisionBlock) => {
+    collisionBlock.update();
+  });
 
   platformCollisionBlocks.forEach((block) => {
-    block.update()
-  })
-
-  c.restore();
+    block.update();
+  });
 
   player.update();
-  player2.update();
 
   player.velocity.x = 0;
   if (keys.d.pressed) {
     player.velocity.x = 3;
   } else if (keys.a.pressed) {
-    player.velocity.x = -1;
+    player.velocity.x = -2;
   }
+
+  c.restore();
 }
 
 animate();
@@ -124,7 +123,7 @@ window.addEventListener("keydown", (event) => {
       keys.a.pressed = true;
       break;
     case "w":
-      player.velocity.y = -15;
+      player.velocity.y = -8;
       break;
   }
 });
