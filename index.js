@@ -61,8 +61,50 @@ const player = new Player({
     y: 300,
   },
   collisionBlocks: collisionBlocks,
-  imageSrc: './img/warrior/Idle.png',
+  imageSrc: "./img/warrior/Idle.png",
   frameRate: 8,
+  animations: {
+    Idle: {
+      imageSrc: "./img/warrior/Idle.png",
+      frameRate: 8,
+      frameBuffer: 3,
+    },
+    Run: {
+      imageSrc: "./img/warrior/Run.png",
+      frameRate: 8,
+      frameBuffer: 5,
+    },
+    Jump: {
+      imageSrc: "./img/warrior/Jump.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
+    Fall: {
+      imageSrc: "./img/warrior/Fall.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
+    FallLeft: {
+      imageSrc: "./img/warrior/FallLeft.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
+    RunLeft: {
+      imageSrc: "./img/warrior/RunLeft.png",
+      frameRate: 8,
+      frameBuffer: 5,
+    },
+    JumpLeft: {
+      imageSrc: "./img/warrior/JumpLeft.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
+    IdleLeft: {
+      imageSrc: "./img/warrior/IdleLeft.png",
+      frameRate: 8,
+      frameBuffer: 3,
+    },
+  },
 });
 
 const keys = {
@@ -103,11 +145,34 @@ function animate() {
 
   player.velocity.x = 0;
   if (keys.d.pressed) {
-    player.velocity.x = 3;
+    player.switchSprite("Run");
+    player.velocity.x = 2;
+    player.lastDirection = "right";
   } else if (keys.a.pressed) {
+    player.switchSprite("RunLeft");
     player.velocity.x = -2;
+    player.lastDirection = "left";
+  } else if (player.velocity.y === 0) {
+    if (player.lastDirection === "right") {
+      player.switchSprite("Idle");
+    } else {
+      player.switchSprite("IdleLeft");
+    }
   }
 
+  if (player.velocity.y < 0) {
+    if (player.lastDirection === 'right') {
+      player.switchSprite("Jump");
+    } else {
+      player.switchSprite("JumpLeft");
+    }
+  } else if (player.velocity.y > 0) {
+    if (player.lastDirection === "right") {
+      player.switchSprite("Fall");
+    } else {
+      player.switchSprite("FallLeft");
+    }
+  }
   c.restore();
 }
 
