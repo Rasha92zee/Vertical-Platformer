@@ -126,6 +126,15 @@ const background = new Sprite({
   imageSrc: "./img/background.png",
 });
 
+const backgroundImageHeight = 432
+
+const camera = {
+  position: {
+    x: 0,
+    y: -backgroundImageHeight + scaledCanvas.height,
+  },
+}
+
 function animate() {
   window.requestAnimationFrame(animate);
   c.fillStyle = "white";
@@ -133,16 +142,17 @@ function animate() {
 
   c.save();
   c.scale(4, 4);
-  c.translate(0, -background.image.height + scaledCanvas.height);
+  c.translate(camera.position.x, camera.position.y);
   background.update();
-  collisionBlocks.forEach((collisionBlock) => {
-    collisionBlock.update();
-  });
+  // collisionBlocks.forEach((collisionBlock) => {
+  //   collisionBlock.update();
+  // });
 
-  platformCollisionBlocks.forEach((block) => {
-    block.update();
-  });
+  // platformCollisionBlocks.forEach((block) => {
+  //   block.update();
+  // });
 
+  player.checkForHorizontalCanvasCollision();
   player.update();
 
   player.velocity.x = 0;
@@ -150,10 +160,13 @@ function animate() {
     player.switchSprite("Run");
     player.velocity.x = 2;
     player.lastDirection = "right";
+    player.shouldPanCameraToTheLeft({ canvas, camera });
+
   } else if (keys.a.pressed) {
     player.switchSprite("RunLeft");
     player.velocity.x = -2;
     player.lastDirection = "left";
+    player.shouldPanCameraToTheRight({ canvas, camera });
   } else if (player.velocity.y === 0) {
     if (player.lastDirection === "right") {
       player.switchSprite("Idle");
@@ -163,12 +176,14 @@ function animate() {
   }
 
   if (player.velocity.y < 0) {
+    player.shouldPanCameraDown({ camera, canvas })
     if (player.lastDirection === 'right') {
       player.switchSprite("Jump");
     } else {
       player.switchSprite("JumpLeft");
     }
   } else if (player.velocity.y > 0) {
+    player.shouldPanCameraUp({ camera, canvas })
     if (player.lastDirection === "right") {
       player.switchSprite("Fall");
     } else {
@@ -181,7 +196,7 @@ function animate() {
 animate();
 
 window.addEventListener("keydown", (event) => {
-  console.log(event);
+  //console.log(event);
   switch (event.key) {
     case "d":
       keys.d.pressed = true;
@@ -196,7 +211,7 @@ window.addEventListener("keydown", (event) => {
 });
 
 window.addEventListener("keyup", (event) => {
-  console.log(event);
+ // console.log(event);
   switch (event.key) {
     case "d":
       keys.d.pressed = false;
